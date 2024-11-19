@@ -6,6 +6,9 @@ TagManager:
   tags:
   - ParedIzquierda
   - ParedDerecha
+  - Muerte
+  - GameManager
+  - Bloque
   layers:
   - Default
   - TransparentFX

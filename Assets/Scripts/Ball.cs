@@ -11,18 +11,18 @@ public class Ball : MonoBehaviour
     private float launchSpeed = 10f;
     private bool isLaunched = false;
     private Rigidbody2D rigidbodyPelota;
+    private float life = 3;
 
     [SerializeField]
     private Transform paddle;
 
     // Posición de la bola respecto de la pala
-    private Vector2 initialPosition = new Vector2 (0.35f, 1.25f);
+    private Vector2 initialPosition = new Vector2 (0.35f, 3.25f);
 
     private void Awake()
     {
         //Obtenemos el componente Rigidbody2D
         this.rigidbodyPelota = GetComponent<Rigidbody2D>();
-
     }
 
 
@@ -42,11 +42,30 @@ public class Ball : MonoBehaviour
         {
             objectDamagable.TakeDamage();
         }
-    }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        
+        //Si el objeto es la pala
+        var objectPaddle = collision.gameObject.GetComponent<Paddle>();
+        if(objectPaddle != null)
+        {
+            Vector3 paddlePosition = collision.transform.position;
+            float paddleWidth = collision.collider.bounds.size.x;
+
+            //Calcula el porcentaje de la bola en la pala (0 a 1)
+            float hitPercent = (transform.position.x - paddlePosition.x) / paddleWidth + 0.5f;
+            hitPercent = Mathf.Clamp01(hitPercent); //Limita el porcentaje entre 0 y 1
+
+            //Mapea el porcentaje al rango de angulos (45 a 135 grados)
+            float minAngle = 45;
+            float maxAngle = 135;
+            float bounceAngle = Mathf.Lerp(maxAngle, minAngle, hitPercent);
+
+            //Calcula la nueva direccion de la bola
+            Vector2 newDirection = Quaternion.Euler(0, 0, bounceAngle) * Vector2.right;
+
+            //Ajustar la velocidad manteniendo a la direccion
+            this.rigidbodyPelota.velocity = newDirection.normalized * this.launchSpeed;
+
+        }
     }
 
     private void LaunchBall()
@@ -70,5 +89,24 @@ public class Ball : MonoBehaviour
             //Aplicamos una velocidad a la bola en la direccion calculada
             this.rigidbodyPelota.velocity = launchDirecion * launchSpeed;
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Muerte"))
+        {
+            
+            
+            Muerte();
+            Debug.Log("Te quedan " + GameManager.Instance.lives);
+        }
+    }
+    void Muerte()
+    {
+        rigidbodyPelota.velocity = Vector2.zero;
+        this.transform.parent = paddle;
+        this.isLaunched = false;
+        transform.localPosition = initialPosition;
+        GameManager.Instance.SubstractLive();
     }
 }

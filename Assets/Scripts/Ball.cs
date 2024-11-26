@@ -11,7 +11,6 @@ public class Ball : MonoBehaviour
     private float launchSpeed = 10f;
     private bool isLaunched = false;
     private Rigidbody2D rigidbodyPelota;
-    private float life = 3;
 
     [SerializeField]
     private Transform paddle;
@@ -88,6 +87,9 @@ public class Ball : MonoBehaviour
 
             //Aplicamos una velocidad a la bola en la direccion calculada
             this.rigidbodyPelota.velocity = launchDirecion * launchSpeed;
+
+            
+
         }
     }
 
@@ -95,8 +97,6 @@ public class Ball : MonoBehaviour
     {
         if (other.CompareTag("Muerte"))
         {
-            
-            
             Muerte();
             Debug.Log("Te quedan " + GameManager.Instance.lives);
         }

@@ -8,6 +8,7 @@ public class Block : MonoBehaviour, IDamagable
     [SerializeField]
     private int hits;
     public int contadorRotos;
+    private PowerUp powerUp;
 
     public void Start()
     {
@@ -40,6 +41,7 @@ public class Block : MonoBehaviour, IDamagable
         {
             contadorRotos += 1;
             Destroy(this.gameObject);
+            this.powerUp = Generador.GeneradorPowerUp();
         }
     }
     

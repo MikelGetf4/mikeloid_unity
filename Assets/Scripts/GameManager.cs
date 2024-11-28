@@ -43,6 +43,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void AddLive()
+    {
+        this.lives++;
+    }
+
+
     public void PantallaLimpia() //Aqui comprobamos que el numero de bloques en pantalla sea 0 menos para acabar el juego
     {
         //Asignamos a "bloquesEnPantalla" los bloques que hay en la escena

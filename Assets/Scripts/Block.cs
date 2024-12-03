@@ -40,9 +40,28 @@ public class Block : MonoBehaviour, IDamagable
         if(this.hits <= 0)
         {
             contadorRotos += 1;
+            this.powerUp = GeneradorPowerUp();
+
+            if (powerUp != null)
+                powerUp.Ejecutar();
+
             Destroy(this.gameObject);
-            this.powerUp = Generador.GeneradorPowerUp();
         }
     }
-    
+
+    private PowerUp GeneradorPowerUp()
+    {
+        PowerUp powerUpADevolver = null;
+
+        int random = Random.Range(1, 6);
+        switch (random)
+        {
+            case 1:
+                Debug.Log("Toco 1");
+                powerUpADevolver = new PaddleGrande();
+                break;
+        }
+        
+        return powerUpADevolver;        
+    }
 }

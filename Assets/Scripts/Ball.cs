@@ -42,6 +42,12 @@ public class Ball : MonoBehaviour
             objectDamagable.TakeDamage();
         }
 
+        if (collision.gameObject.CompareTag("Bloque"))
+        {
+            // Añade Puntos
+            GameManager.Instance.AñadirPuntos();
+        }
+
         //Si el objeto es la pala
         var objectPaddle = collision.gameObject.GetComponent<Paddle>();
         if(objectPaddle != null)
@@ -101,6 +107,7 @@ public class Ball : MonoBehaviour
             Debug.Log("Te quedan " + GameManager.Instance.lives);
         }
     }
+
     void Muerte()
     {
         rigidbodyPelota.velocity = Vector2.zero;

@@ -9,6 +9,7 @@ TagManager:
   - Muerte
   - GameManager
   - Bloque
+  - Paddle
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Post Processing
   - 
   - 
   - 

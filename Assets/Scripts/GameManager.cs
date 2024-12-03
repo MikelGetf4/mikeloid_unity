@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public int lives;
     public int bloquesEnPantalla;
+    public int puntos = 0;
 
     public int Lives {  get { return lives; } }
 
@@ -29,6 +30,12 @@ public class GameManager : MonoBehaviour
     public void Update()
     {
         PantallaLimpia();
+    }
+
+    public void AñadirPuntos()
+    {
+        puntos += 200;
+        Debug.Log("Tienes " + puntos + " puntos");
     }
 
 

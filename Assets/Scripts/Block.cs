@@ -9,9 +9,12 @@ public class Block : MonoBehaviour, IDamagable
     private int hits;
     public int contadorRotos;
     private PowerUp powerUp;
+    private GameManager gameManager;
+     
 
     public void Start()
     {
+        gameManager = GameObject.FindObjectOfType<GameManager>();
         RevisarColor();
     }
 
@@ -53,15 +56,19 @@ public class Block : MonoBehaviour, IDamagable
     {
         PowerUp powerUpADevolver = null;
 
-        int random = Random.Range(1, 6);
+        int random = Random.Range(1, 3);
         switch (random)
         {
             case 1:
-                Debug.Log("Toco 1");
+                Debug.Log("Tocó 1");
                 powerUpADevolver = new PaddleGrande();
                 break;
+            case 2:
+                Debug.Log("Tocó 2");
+                GameManager.Instance.AddLive();
+                break;
         }
-        
-        return powerUpADevolver;        
+
+        return powerUpADevolver;
     }
 }

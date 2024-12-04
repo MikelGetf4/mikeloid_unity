@@ -4,49 +4,53 @@ using UnityEngine;
 
 public class PaddleGrande : PowerUp
 {
+    private Vector3 escalaOriginal;
+    private float tiempoRestante = 5f;
+    private bool powerUpActivo = false;
+    private GameObject paddle;
+    private Paddle paddleScript;
+
+
     public override void Ejecutar()
     {
+
         var paddle = GameObject.FindGameObjectWithTag("Paddle");
         var codigo = GameObject.FindObjectOfType<Paddle>();
-
-        if(paddle != null)
+        escalaOriginal= paddle.transform.localScale;
+        if (paddle != null)
         {
             Transform escala = paddle.transform;
 
             escala.localScale = new Vector3(4, escala.localScale.y, escala.localScale.z);
 
             codigo.CalcularLimites();
-            
+            Debug.Log("ALARGANDOOOO");
+            powerUpActivo = true;
+
         }
+
+        
     }
-    private IEnumerator ResetPaddleSize(GameObject paddle, Paddle codigo, Vector3 originalScale)
+
+    public void RestaurarEscala()
     {
-        // Espera 7 segundos antes de iniciar el efecto visual
-        yield return new WaitForSeconds(7f);
-
-        // Inicia el efecto visual (parpadeo durante 3 segundos)
-        Renderer paddleRenderer = paddle.GetComponent<Renderer>();
-        if (paddleRenderer != null)
+        
+        if (powerUpActivo)
         {
-            for (int i = 0; i < 6; i++) // Parpadea 6 veces (3 segundos)
+            tiempoRestante -= Time.deltaTime;
+
+            if (tiempoRestante <= 0f)
             {
-                paddleRenderer.enabled = !paddleRenderer.enabled;
-                yield return new WaitForSeconds(0.5f);
+                RestaurarEscala();
+                Debug.Log("Restaurando escala");
+                powerUpActivo = false;
+                tiempoRestante = 5f;
+                if (paddle != null && paddleScript != null)
+                {
+                    paddle.transform.localScale = escalaOriginal;
+                    paddleScript.CalcularLimites();
+                }
             }
-
-            // Asegúrate de que el paddle esté visible al final
-            paddleRenderer.enabled = true;
         }
-
-        // Después del efecto, vuelve al tamaño original
-        Transform escala = paddle.transform;
-        escala.localScale = new Vector3(2, originalScale.y, originalScale.z); // Ajusta 2 a tu tamaño original
-
-        // Vuelve a calcular los límites
-        codigo.CalcularLimites();
-
-        Debug.Log("El Paddle ha vuelto a su tamaño original.");
     }
-
-
 }

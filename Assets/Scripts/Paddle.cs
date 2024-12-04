@@ -18,6 +18,7 @@ public class Paddle : MonoBehaviour
     private float limiteDerecha;
 
 
+
     public void CalcularLimites()
     {
         var anchoPala = this.GetComponent<SpriteRenderer>().bounds.size.x;

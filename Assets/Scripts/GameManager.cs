@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public int lives;
+    public int maxLives = 3;
     public int bloquesEnPantalla;
     public int puntos = 0;
+
+    public Image[] corazones;
+    public Sprite vidaLlena;
+    public Sprite vidaVacia;
 
     public int Lives {  get { return lives; } }
 
@@ -30,12 +36,24 @@ public class GameManager : MonoBehaviour
     public void Update()
     {
         PantallaLimpia();
+
+        for (int i = 0; i < corazones.Length; i++)
+        {
+            if(i < lives)
+            {
+                corazones[i].sprite = vidaLlena;
+            }
+            else
+            {
+                corazones[i].sprite = vidaVacia;
+            }
+        }
     }
 
     public void AñadirPuntos()
     {
         puntos += 200;
-        Debug.Log("Tienes " + puntos + " puntos");
+        
     }
 
 
@@ -52,7 +70,15 @@ public class GameManager : MonoBehaviour
 
     public void AddLive()
     {
-        this.lives++;
+        if (this.lives >= 3)
+        {
+            Debug.Log("Amigo andas lleno");
+        }
+        else
+        {
+            this.lives++;
+            Debug.Log("Sumas una vida, ahora tienes " + lives);
+        }
     }
 
 

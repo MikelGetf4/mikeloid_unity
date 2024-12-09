@@ -9,15 +9,8 @@ public class ScoreManager : MonoBehaviour
 
     public TextMeshProUGUI score;
     public GameManager gameManager;
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    void Update() //Comprueba constamente los puntos de la variable "puntos" del Game Manager y los enseña en pantalla
     {
         score.text = "Puntos: " + gameManager.puntos;
     }

@@ -8,15 +8,17 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     [SerializeField]
-    private float launchSpeed = 10f;
-    private bool isLaunched = false;
-    private Rigidbody2D rigidbodyPelota;
+    private float launchSpeed = 10f;        //Velocidad de salida de la pelota
+    private bool isLaunched = false;        //Detecta si la pelota ha sido lanzada
+    private Rigidbody2D rigidbodyPelota;    //El Righidbody de la pelota
 
     [SerializeField]
-    private Transform paddle;
+    private Transform paddle;               //Los valores del paddle
 
     // Posición de la bola respecto de la pala
     private Vector2 initialPosition = new Vector2 (0.35f, 3.25f);
+
+    public GameObject pulsaText;            //El texto "Pulsa SPACE para lanzar la pelota"
 
     private void Awake()
     {
@@ -29,6 +31,8 @@ public class Ball : MonoBehaviour
     void Update()
     {
         LaunchBall();
+
+        EvitarMovimientoHorizontal();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -36,7 +40,7 @@ public class Ball : MonoBehaviour
         //Obtenemos el componente IDamagable del objeto con el que hemos colisionado
         var objectDamagable = collision.gameObject.GetComponent<IDamagable>();
 
-        //Si el objeto es distinto de !null, llamamos su metodo TakeDamage()
+        //Si el objeto es distinto de null, llamamos su metodo TakeDamage()
         if (objectDamagable != null)
         {
             objectDamagable.TakeDamage();
@@ -73,20 +77,19 @@ public class Ball : MonoBehaviour
         }
     }
 
-    private void LaunchBall()
+    private void LaunchBall() //Logica para lanzar la bola
     {
          // Si pulsamos la tecla Space y la pelota no ha sido lanzada, la lanzamos
          if(Input.GetKeyDown (KeyCode.Space) && isLaunched == false)
         {
             //Establecemos la pelota como lanzada
             this.isLaunched = true;
-            Debug.Log("La Pelota ha sido lanzada");
 
             //Sacamos a la pelota de la pala
             this.transform.parent = null;
 
             //Establecemos una direecion aleatoria de lanzamiento
-            float randomDirecion = Random.Range (-1.0f, 1.0f);
+            float randomDirecion = Random.Range (-0.3f, 0.3f);
 
             //Calculamos la direccion de lanzamiento de la bola
             Vector3 launchDirecion = new Vector3(randomDirecion, 1, 0).normalized;
@@ -94,12 +97,19 @@ public class Ball : MonoBehaviour
             //Aplicamos una velocidad a la bola en la direccion calculada
             this.rigidbodyPelota.velocity = launchDirecion * launchSpeed;
 
-            
+            pulsaText.SetActive(false); //Apagamos el texto "Pulsa SPACE"
 
         }
     }
+    private void EvitarMovimientoHorizontal()
+    {
+        if (isLaunched && Mathf.Abs(this.rigidbodyPelota.velocity.y) < 4f)
+        {
+            this.rigidbodyPelota.velocity = new Vector2(rigidbodyPelota.velocity.x, 10f).normalized * launchSpeed;
+        }
+    }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other) //Si la pelota toca el Collider de muerte, se activa la función de Muerte()
     {
         if (other.CompareTag("Muerte"))
         {
@@ -108,12 +118,16 @@ public class Ball : MonoBehaviour
         }
     }
 
-    void Muerte()
+    //Si muere, le quitamos la velocidad, la anclamos al paddle, la contamos como "no lanzada", la colocamos sobre el paddle y le quitamos una vida
+    void Muerte() 
     {
         rigidbodyPelota.velocity = Vector2.zero;
         this.transform.parent = paddle;
         this.isLaunched = false;
         transform.localPosition = initialPosition;
         GameManager.Instance.SubstractLive();
+
+
+        pulsaText.SetActive(true); //Encendemos el texto "Pulsa SPACE"
     }
 }
